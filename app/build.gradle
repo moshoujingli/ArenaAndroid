@@ -1,0 +1,80 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+    def getVersionCode = {
+        return project.hasProperty('versionCode') ? versionCode.toInteger() : 406
+    }
+
+    def getVersionName = {
+        return project.hasProperty('versionName') ? versionName : "1.0.0"
+    }
+
+    defaultConfig {
+        applicationId "com.moshoujingli.arena"
+        minSdkVersion 15
+        targetSdkVersion 25
+        versionCode getVersionCode()
+        versionName getVersionName()
+        multiDexEnabled true
+        buildConfigField "String","leanCloudAppId" ,APP_ID_LEANCLOUD
+        buildConfigField "String","leanCloudAppClientSecret", APP_SECRET_LEANCLOUD
+
+        ndk {
+            abiFilter 'armeabi-v7a'
+        }
+        resConfigs "en", "ar", "de", "es", "es-rUS", "fr", "hi", "in", "it", "ja", "ko",
+                "nl", "pl", "pt", "pt-rBR", "ru", "th", "tr", "uk", "vi", "zh-rCN", "zh-rTW"
+    }
+
+    signingConfigs {
+        tapasdebug {
+            storeFile file("tapasdebug.keystore")
+            storePassword KEYSTORE_PASSWORD
+            keyAlias "tapasdebug.keystore"
+            keyPassword KEY_PASSWORD
+            v2SigningEnabled false
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.tapasdebug
+            minifyEnabled false
+            buildConfigField "boolean", "DEBUG_LOG", "true"
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        release {
+            signingConfig signingConfigs.tapasdebug
+            minifyEnabled true
+            shrinkResources true
+            buildConfigField "boolean", "DEBUG_LOG", "false"
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    packagingOptions{
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:25.1.0'
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:support-v4:25.1.0'
+    compile 'com.android.support:design:25.1.0'
+    compile 'com.android.support:recyclerview-v7:25.1.0'
+    compile 'com.google.code.gson:gson:2.7'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
+
+    compile ('cn.leancloud.android:avoscloud-sdk:v3.+')
+    compile ('cn.leancloud.android:avoscloud-statistics:v3.+')
+
+}
