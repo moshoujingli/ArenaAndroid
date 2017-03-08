@@ -2,4 +2,6 @@
     <string name="app_name">Arena</string>
     <string name="tab_video">Video</string>
     <string name="tab_capture">Capture</string>
+    <string name="func_capture">Capture</string>
+    <string name="func_upload">Upload</string>
 </resources>

@@ -3,4 +3,6 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="tab_area_height">49dp</dimen>
+    <dimen name="item_media_list_height">75dp</dimen>
+    <dimen name="detail_player_height">120dp</dimen>
 </resources>

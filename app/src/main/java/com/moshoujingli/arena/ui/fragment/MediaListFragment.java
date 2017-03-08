@@ -11,18 +11,18 @@ import com.moshoujingli.arena.ui.adapter.MediaAdapter;
  * Created by bixiaopeng on 2017/1/26.
  */
 
-public class VideoListFragment extends TemplateFragment {
+public class MediaListFragment extends TemplateFragment {
     private RecyclerView videoListView;
     private MediaAdapter adapter;
 
     @Override
     protected int getMainLayout() {
-        return R.layout.fragment_video_list;
+        return R.layout.fragment_media_list;
     }
 
     @Override
     protected void initialView(@Nullable View root) {
-        videoListView = (RecyclerView)root.findViewById(R.id.video_list);
+        videoListView = (RecyclerView)root.findViewById(R.id.media_list);
         adapter = new MediaAdapter();
         videoListView.setAdapter(adapter);
     }
