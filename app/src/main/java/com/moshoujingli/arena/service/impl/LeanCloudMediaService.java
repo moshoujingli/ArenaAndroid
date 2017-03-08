@@ -1,10 +1,13 @@
 package com.moshoujingli.arena.service.impl;
 
+import android.content.pm.PackageManager;
+
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetCallback;
 import com.moshoujingli.arena.model.Media;
 import com.moshoujingli.arena.model.User;
 import com.moshoujingli.arena.service.IMediaService;
@@ -32,11 +35,11 @@ public class LeanCloudMediaService implements IMediaService {
 
     @Override
     public void uploadMedia(Media media, User user) {
-        AVObject product = new AVObject("media");
+        AVObject mediaObject = new AVObject("media");
 
-        product.put(FIELD_MEDIA_FILE, new AVFile("media_content", readByte(media.mediaUrl)));
-        product.put(FIELD_MEDIA_THUMBNAIL, new AVFile("tbl_content", readByte(media.thumbnailUrl)));
-        product.saveInBackground();
+        mediaObject.put(FIELD_MEDIA_FILE, new AVFile("media_content", readByte(media.mediaUrl)));
+        mediaObject.put(FIELD_MEDIA_THUMBNAIL, new AVFile("tbl_content", readByte(media.thumbnailUrl)));
+        mediaObject.saveInBackground();
 //        media.thumbnailUrl;
 //        media.mediaUrl;
     }
@@ -75,6 +78,22 @@ public class LeanCloudMediaService implements IMediaService {
 
     @Override
     public void getMediaAsync(EnumSet<SortType> sort, EnumMap<Option, String> option, final ResultCallback<List<Media>> callback) {
+
+        if (option.containsKey(Option.MEDIA_ID)) {
+            AVObject avObject = AVObject.createWithoutData("media", option.get(Option.MEDIA_ID));
+            avObject.fetchIfNeededInBackground(new GetCallback<AVObject>() {
+                @Override
+                public void done(AVObject object, AVException e) {
+                    if (e != null) {
+                        e.printStackTrace();
+                        LogHelper.e(TAG, "error for fetch by id", e);
+                    }
+                    callback.onReceiveResult(Collections.singletonList(toMedia(object)));
+                }
+            });
+            return;
+        }
+
         AVQuery<AVObject> query = new AVQuery<>("media");
         query.orderByDescending("createdAt");
         query.findInBackground(new FindCallback<AVObject>() {
@@ -103,8 +122,9 @@ public class LeanCloudMediaService implements IMediaService {
 
     private Media toMedia(AVObject object) {
         Media media = new Media();
-        AVFile file = object.getAVFile(FIELD_MEDIA_THUMBNAIL);
-        media.thumbnailUrl = file.getUrl();
+        media.thumbnailUrl = object.getAVFile(FIELD_MEDIA_THUMBNAIL).getUrl();
+        media.mediaUrl = object.getAVFile(FIELD_MEDIA_FILE).getUrl();
+        media.id = object.getObjectId();
         return media;
     }
 }

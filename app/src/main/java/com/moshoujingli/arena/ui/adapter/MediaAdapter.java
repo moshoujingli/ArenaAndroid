@@ -1,6 +1,7 @@
 package com.moshoujingli.arena.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +10,11 @@ import android.widget.ImageView;
 
 import com.moshoujingli.arena.R;
 import com.moshoujingli.arena.model.Media;
+import com.moshoujingli.arena.ui.activity.MediaUploadActivity;
+import com.moshoujingli.arena.ui.event.MediaItemClickEvent;
 import com.squareup.picasso.Picasso;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -48,8 +53,16 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaListIte
 
     @Override
     public void onBindViewHolder(MediaListItemViewHolder holder, int position) {
-        Media media = medias.get(position);
+        final Media media = medias.get(position);
         picasso.load(media.thumbnailUrl).into(holder.imageView);
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MediaItemClickEvent e = new MediaItemClickEvent();
+                e.media = media;
+                EventBus.getDefault().post(e);
+            }
+        });
     }
 
 

@@ -18,8 +18,6 @@ import com.moshoujingli.arena.pref.UserPreference;
 import com.moshoujingli.arena.utils.LocalStorageHelper;
 import com.moshoujingli.arena.utils.LogHelper;
 
-import static com.moshoujingli.arena.service.IMediaService.CHALLENGE_MEDIA_ID_NONE;
-
 /**
  * Created by bixiaopeng on 2017/1/28.
  */
@@ -35,14 +33,14 @@ public class MediaUploadActivity extends BaseActivity implements View.OnClickLis
     private String curTblPath;
 
     public static void launch(Activity activity) {
-        launch(activity, CHALLENGE_MEDIA_ID_NONE);
+        launch(activity, null);
     }
 
-    public static void launch(Activity activity,int challengeMediaId) {
+    public static void launch(Activity activity, String challengeMediaId) {
         Intent i = new Intent(activity, MediaUploadActivity.class);
-        if (challengeMediaId!=CHALLENGE_MEDIA_ID_NONE){
-            i.putExtra(CHALLENGE_MEDIA_ID,challengeMediaId);
-            i.putExtra(FROM_CHALLENGE_MEDIA,true);
+        if (challengeMediaId != null) {
+            i.putExtra(CHALLENGE_MEDIA_ID, challengeMediaId);
+            i.putExtra(FROM_CHALLENGE_MEDIA, true);
         }
         activity.startActivity(i);
     }
@@ -75,26 +73,26 @@ public class MediaUploadActivity extends BaseActivity implements View.OnClickLis
             media.userId = UserPreference.getCurrentUser().id;
             media.mediaUrl = curFilePath;
             media.thumbnailUrl = curTblPath;
-            if (getIntent().getBooleanExtra(FROM_CHALLENGE_MEDIA,false)){
-                int challengeId = getIntent().getIntExtra(CHALLENGE_MEDIA_ID, CHALLENGE_MEDIA_ID_NONE);
-                if (challengeId==CHALLENGE_MEDIA_ID_NONE){
+            if (getIntent().getBooleanExtra(FROM_CHALLENGE_MEDIA, false)) {
+                String challengeId = getIntent().getStringExtra(CHALLENGE_MEDIA_ID);
+                if (challengeId == null) {
                     LogHelper.errorState("FROM_CHALLENGE_MEDIA is true but no CHALLENGE_MEDIA_ID");
                 }
                 media.challengeMediaId = challengeId;
             }
-            ArenaApp.getMediaService().uploadMedia(media,UserPreference.getCurrentUser());
+            ArenaApp.getMediaService().uploadMedia(media, UserPreference.getCurrentUser());
             finish();
         }
     }
 
     private void startMediaCapture() {
-//        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-//        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0.8);
-//        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 30);
-//        intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 100*1000*1000);
-//        startActivityForResult(intent, VIDEO_CAPTURE);
-        Intent i = new Intent(this,MediaCaptureActivity.class);
-        startActivity(i);
+        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0.8);
+        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 30);
+        intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 100 * 1000 * 1000);
+        startActivityForResult(intent, VIDEO_CAPTURE);
+//        Intent i = new Intent(this,MediaCaptureActivity.class);
+//        startActivity(i);
     }
 
     @Override

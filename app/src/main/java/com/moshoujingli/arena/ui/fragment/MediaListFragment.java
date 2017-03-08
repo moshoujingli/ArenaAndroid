@@ -9,7 +9,13 @@ import com.moshoujingli.arena.ArenaApp;
 import com.moshoujingli.arena.R;
 import com.moshoujingli.arena.model.Media;
 import com.moshoujingli.arena.service.IMediaService;
+import com.moshoujingli.arena.ui.activity.MediaDetailActivity;
 import com.moshoujingli.arena.ui.adapter.MediaAdapter;
+import com.moshoujingli.arena.ui.event.MediaItemClickEvent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -25,6 +31,18 @@ import java.util.List;
 public class MediaListFragment extends TemplateFragment {
     private RecyclerView videoListView;
     private MediaAdapter adapter;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
 
     @Override
     protected int getMainLayout() {
@@ -48,6 +66,10 @@ public class MediaListFragment extends TemplateFragment {
             }
         });
         videoListView.setAdapter(adapter);
+    }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MediaItemClickEvent event) {
+        MediaDetailActivity.launch(getActivity(),event.media.id);
     }
 }

@@ -16,8 +16,6 @@ public interface IMediaService {
         void onReceiveResult(T result);
     }
 
-    int CHALLENGE_MEDIA_ID_NONE = -1;
-
     enum SortType {
         TIME,
         SHOW,

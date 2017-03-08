@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by bixiaopeng on 2017/1/28.
  *
- *  id
+ *  id // uuid for certain media
  *	user id
  *	获得缩略图（地址）
  *	获得视频（地址）
@@ -17,11 +17,11 @@ import java.util.List;
  */
 
 public class Media {
-    public int id;
+    public String id;
     public int userId;
     public String thumbnailUrl;
     public String mediaUrl;
-    public int challengeMediaId;
+    public String challengeMediaId;
     public int viewCount;
     public int voteUpCount;
     public int durationTimeMillis;
