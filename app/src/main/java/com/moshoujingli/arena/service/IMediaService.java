@@ -12,10 +12,16 @@ import java.util.List;
  */
 
 public interface IMediaService {
+    interface ResultCallback<T> {
+        void onReceiveResult(T result);
+    }
+
     int CHALLENGE_MEDIA_ID_NONE = -1;
 
     enum SortType {
-
+        TIME,
+        SHOW,
+        RECOMMEND
     }
 
     enum Option {
@@ -27,6 +33,7 @@ public interface IMediaService {
     void challengeMedia(Media target, Media challenger);
 
     List<Media> getMedia(EnumSet<SortType> sort, EnumMap<Option, String> option);
+    void getMediaAsync(EnumSet<SortType> sort, EnumMap<Option, String> option,ResultCallback<List<Media>> callback);
 
     void voteUpMedia(Media media, User user);
 
